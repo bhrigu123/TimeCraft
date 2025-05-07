@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct TimeCraftApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+        // Empty scene for menu bar app
+        Settings { }
     }
 }

@@ -12,7 +12,6 @@ struct EditableActivityRowView: View {
     @State private var editingHours: Int = 0
     @State private var editingMinutes: Int = 0
     
-    // TODO: Add state for duration editing if needed, e.g., selectedHours, selectedMinutes
 
     var body: some View {
         HStack(spacing: 12) {
@@ -137,39 +136,11 @@ struct EditableActivityRowView: View {
         }
     }
 
-    // Helper to format time interval (can be moved to a common utility file)
-    private func formatTimeInterval(_ interval: TimeInterval) -> String {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute]
-        formatter.unitsStyle = .abbreviated
-        if interval == 0 {
-            return "0m"
-        }
-        return formatter.string(from: interval) ?? "0m"
-    }
-
-    // Helper to break TimeInterval into hours and minutes for pickers
-    private func durationComponents(from interval: TimeInterval) -> (hours: Int, minutes: Int) {
-        let totalMinutes = Int(interval) / 60
-        let hours = totalMinutes / 60
-        let minutes = totalMinutes % 60
-        return (hours, minutes)
-    }
+    // Removed local helper functions as they are now global in TimeFormatting.swift
 }
 
-// Helper extension for Color toHex (should be in a central place like Theme.swift or Extensions.swift)
-// This is added here temporarily to make EditableActivityRowView self-contained for now.
-// Ensure this doesn't conflict with an existing global one.
-// extension Color {
-//     func toHex() -> String? {
-//         guard let cgColor = self.cgColor else { return nil }
-//         let components = cgColor.components
-//         let r: CGFloat = components?[0] ?? 0
-//         let g: CGFloat = components?[1] ?? 0
-//         let b: CGFloat = components?[2] ?? 0
-//         return String(format: "#%02lX%02lX%02lX", lround(Double(r * 255)), lround(Double(g * 255)), lround(Double(b * 255)))
-//     }
-// }
+// Helper extension for Color toHex is removed as it should be in a central place.
+// Removed: // extension Color { ... }
 
 // Preview
 struct EditableActivityRowView_Previews: PreviewProvider {

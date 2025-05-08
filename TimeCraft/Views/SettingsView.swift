@@ -30,16 +30,7 @@ struct SettingsView: View {
             Activity(name: "Reading", targetDuration: 1 * 3600, colorHex: Color.readingColor.toHex() ?? "#BF5AF2", iconName: "book.fill"),
             Activity(name: "Exercise", targetDuration: 45 * 60, colorHex: Color.exerciseColor.toHex() ?? "#32ADE6", iconName: "figure.walk")
         ]
-        // Persist defaults immediately if activitiesData was empty
-        // This ensures that if the user interacts (e.g. edits) one of the defaults, the full list is saved.
-        // The `activities` setter will handle the actual saving.
-        // To trigger the save, we can assign to a temporary variable that then assigns to self.activities, or call saveActivities directly.
-        // For simplicity, let's rely on the first modification via EditableActivityRowView to save them.
-        // Or, we can explicitly save here if needed.
-        // Note: Directly assigning to self.activities here would call the setter.
-        // However, this function is called from the getter, which could lead to a loop.
-        // The strategy will be: if activitiesData is empty, this provides defaults.
-        // The first save operation triggered by an edit/delete will persist these defaults along with the change.
+        // Default activities are returned if no data exists; they are saved upon first modification or addition.
         return defaults
     }
 
@@ -55,30 +46,20 @@ struct SettingsView: View {
     
     private func resetAllProgress() {
         timerService.stopAndSaveCurrentTimer()
-        var currentActivities = self.activities // Accesses the getter, which provides defaults if empty
+        var currentActivities = self.activities
         
-        // If currentActivities is empty (meaning activitiesData was empty and defaults were provided by getter)
-        // and we want to ensure these defaults are part of the reset, this structure is okay.
-        // If activitiesData was empty, currentActivities will now hold the default activities.
-        if currentActivities.isEmpty && activitiesData.isEmpty { // This condition might be redundant due to getter logic
-             // The getter for `self.activities` already returns default activities if activitiesData is empty.
-             // So, currentActivities will already be populated with defaults if needed.
-             // If it's still empty, it means defaultActivities() returned empty, which shouldn't happen with current setup.
-        }
+        // If activitiesData was empty, currentActivities will hold the defaults from defaultActivities().
+        // The loop below will set elapsedTime to 0 for these.
 
         for i in 0..<currentActivities.count {
             currentActivities[i].elapsedTime = 0
         }
-        // Use the setter for `activities` to save, or call `saveActivities` directly.
-        // Calling saveActivities directly is clearer here.
         saveActivities(currentActivities)
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header: Activities count
-            // The "Add Activity" button is removed as per inline editing design.
-            // User can be instructed to add activities through a different mechanism or we can add a dedicated "add row" later.
+            // Header: Activities count and Add New button
             HStack {
                 Text("Activities (\(activities.count))")
                     .font(.appHeadline)
@@ -87,7 +68,7 @@ struct SettingsView: View {
                 Button(action: addNewActivity) {
                     HStack {
                         Image(systemName: "plus")
-                        Text("Add New").font(.appButton) // Changed text slightly for brevity
+                        Text("Add New").font(.appButton)
                     }
                     .foregroundColor(.appAccent)
                 }
@@ -157,7 +138,6 @@ struct SettingsView: View {
             .padding()
         }
         .background(Color.appBackground.edgesIgnoringSafeArea(.all))
-        // .sheet for AddActivityView is removed
     }
 
     private func addNewActivity() {

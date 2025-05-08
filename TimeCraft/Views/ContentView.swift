@@ -1,42 +1,37 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var timerManager = TimerManager()
+    @State private var selectedTab: Tab = .activities
+
+    enum Tab {
+        case activities
+        case settings
+    }
 
     var body: some View {
-        VStack(spacing: 15) {
-            Text(timerManager.formattedTime())
-                .font(.largeTitle)
-                .padding()
+        VStack(spacing: 0) {
+            Picker("Choose a tab", selection: $selectedTab) {
+                Text("Activities").tag(Tab.activities)
+                Text("Settings").tag(Tab.settings)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
 
-            HStack {
-                if timerManager.timerMode == .stopped {
-                    Button("Start Timer") {
-                        timerManager.startTimer()
-                    }
-                    .padding(.horizontal)
+            // Content based on selected tab
+            Group {
+                if selectedTab == .activities {
+                    ActivitiesView()
                 } else {
-                    Button("Stop Timer") {
-                        timerManager.stopTimer()
-                    }
-                    .padding(.horizontal)
+                    SettingsView()
                 }
-
-                Button("Reset Timer") {
-                    timerManager.resetTimer()
-                }
-                .padding(.horizontal)
-                .disabled(timerManager.secondsElapsed == 0 && timerManager.timerMode == .stopped)
             }
-            .padding(.bottom)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            Button("Quit App") {
-                 NSApplication.shared.terminate(nil)
-            }
-            .padding(.top, 20)
+            // Footer (like the reset button and version)
+            // We can add this later when styling
         }
-        .padding()
-        .frame(minWidth: 250, minHeight: 200)
+        // Remove the default frame from the original placeholder if it exists
+        // .frame(maxWidth: .infinity, maxHeight: .infinity) // Ensure this line is removed if present from previous step
     }
 }
 

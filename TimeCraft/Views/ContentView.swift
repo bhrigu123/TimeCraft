@@ -2,10 +2,20 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab: Tab = .activities
+    @ObservedObject var timerService: ActivityTimerService
 
     enum Tab {
         case activities
         case settings
+    }
+
+    init(timerService: ActivityTimerService) {
+        self.timerService = timerService
+        // Apply global Picker styling if desired (for SegmentedPickerStyle)
+        // UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(Color.appAccent)
+        // UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+        // UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(Color.primaryText)], for: .normal)
+        // Note: UISegmentedControl appearance is for UIKit. For pure SwiftUI on macOS, direct styling is different.
     }
 
     var body: some View {
@@ -15,14 +25,19 @@ struct ContentView: View {
                 Text("Settings").tag(Tab.settings)
             }
             .pickerStyle(SegmentedPickerStyle())
-            .padding()
+            // .background(Color.secondaryBackground) // This might color the whole picker area
+            .padding(.horizontal)
+            .padding(.top, 10)
+            .padding(.bottom, 5)
+            // Further Picker styling for macOS is often about how it interacts with its container.
+            // We can achieve the look in the screenshot by careful padding and container colors.
 
             // Content based on selected tab
             Group {
                 if selectedTab == .activities {
-                    ActivitiesView()
+                    ActivitiesView(timerService: timerService)
                 } else {
-                    SettingsView()
+                    SettingsView(timerService: timerService)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -30,13 +45,14 @@ struct ContentView: View {
             // Footer (like the reset button and version)
             // We can add this later when styling
         }
-        // Remove the default frame from the original placeholder if it exists
-        // .frame(maxWidth: .infinity, maxHeight: .infinity) // Ensure this line is removed if present from previous step
+        .background(Color.appBackground) // Apply overall background color
+        .edgesIgnoringSafeArea(.all) // Extend background to edges if popover allows
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(timerService: ActivityTimerService())
+            .frame(width: 320, height: 450)
     }
 } 

@@ -6,9 +6,14 @@ import SwiftUI
 class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem?
     var popover: NSPopover?
+    var timerService: ActivityTimerService? // Hold the timer service instance
 
     // Called when the application has finished launching and is ready to run.
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Create the timer service instance
+        let timerService = ActivityTimerService()
+        self.timerService = timerService
+
         // Create the status item (the icon in the menu bar).
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
@@ -21,9 +26,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         popover = NSPopover()
         popover?.contentSize = NSSize(width: 320, height: 450) 
         popover?.behavior = .transient
-        // Set the content of the popover to be our SwiftUI ContentView, hosted within an NSHostingController.
-        // ContentView is defined in Views/ContentView.swift
-        popover?.contentViewController = NSHostingController(rootView: ContentView())
+        // Pass the timerService to ContentView
+        popover?.contentViewController = NSHostingController(rootView: ContentView(timerService: timerService))
     }
 
     // This @objc function is called when the status item button (menu bar icon) is clicked.
@@ -40,5 +44,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 popover.contentViewController?.view.window?.makeKeyAndOrderFront(nil)
             }
         }
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        // Save any active timer state before the app quits.
+        timerService?.saveCurrentStateBeforeQuit()
     }
 } 

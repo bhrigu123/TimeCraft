@@ -5,10 +5,9 @@ func formatTimeInterval(_ interval: TimeInterval) -> String {
     let formatter = DateComponentsFormatter()
     formatter.allowedUnits = [.hour, .minute]
     formatter.unitsStyle = .abbreviated
-    if interval == 0 {
-        return "0m"
-    }
-    return formatter.string(from: interval) ?? "0m"
+    // Ensure non-negative intervals are formatted correctly
+    let nonNegativeInterval = max(0, interval)
+    return formatter.string(from: nonNegativeInterval) ?? "0m"
 }
 
 // Helper to break TimeInterval into hours and minutes components

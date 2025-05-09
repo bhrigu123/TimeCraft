@@ -59,7 +59,8 @@ class ActivityTimerService: ObservableObject {
         if let currentActiveID = activeActivityID {
             updateActivityElapsedTime(activityID: currentActiveID, newTime: currentElapsedTimeForActiveActivity)
         }
-        // activeActivityID remains set, so user can resume.
+        activeActivityID = nil // Reset activeActivityID to nil when pausing
+        // To make the card show 'play' again. If resume is needed, this needs more state.
     }
 
     func stopAndSaveCurrentTimer() {

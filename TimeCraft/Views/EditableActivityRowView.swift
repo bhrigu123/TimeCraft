@@ -23,21 +23,23 @@ struct EditableActivityRowView: View {
                     showingColorPicker = true
                 }
                 .popover(isPresented: $showingColorPicker) {
-                    VStack {
-                        ColorPicker("Activity Color", selection: Binding(
-                            get: { activity.color },
-                            set: { newValue in
-                                var updatedActivity = activity
-                                updatedActivity.colorHex = newValue.toHex() ?? activity.colorHex
-                                onSave(updatedActivity)
-                            }
-                        ), supportsOpacity: false)
-                        Button("Done") {
-                            showingColorPicker = false
+                    ColorSwatchView(selectedColorHex: Binding(
+                        get: { activity.colorHex },
+                        set: { (newHex: String) in
+                            var updatedActivity = activity
+                            updatedActivity.colorHex = newHex
+                            // It's important that onSave is called to persist the change
+                            // and ensure the @Binding activity reflects the update immediately
+                            // if the source of truth relies on it.
+                            onSave(updatedActivity)
                         }
-                        .padding()
-                    }
-                    .padding()
+                    ), onColorSelected: { selectedHex in
+                        // This callback is used by ColorSwatchView to update the binding.
+                        // The actual save logic is now within the binding's setter above.
+                        // If you want to dismiss the popover upon selection, 
+                        // you can call showingColorPicker = false here or inside ColorSwatchView.
+                        // For now, relying on the "Done" button in ColorSwatchView.
+                    })
                 }
 
             // Activity Name (Text or TextField)

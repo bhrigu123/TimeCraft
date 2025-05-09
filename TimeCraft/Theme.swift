@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Color Palette
 extension Color {
     // General UI Colors
-    static let appBackground = Color(hex: "#F2F2F7")!
+    static let appBackground = Color(NSColor.controlBackgroundColor)
     static let secondaryBackground = Color(hex: "#E9E9EB")!
     static let cardBackground = Color(NSColor.windowBackgroundColor)
     

@@ -6,12 +6,12 @@ import SwiftUI
 class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem?
     var popover: NSPopover?
-    var timerService: ActivityTimerService? // Hold the timer service instance
+    var timerService: GoalTimerService? // Hold the timer service instance
 
     // Called when the application has finished launching and is ready to run.
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Create the timer service instance
-        let timerService = ActivityTimerService()
+        let timerService = GoalTimerService()
         self.timerService = timerService
 
         // Create the status item (the icon in the menu bar).

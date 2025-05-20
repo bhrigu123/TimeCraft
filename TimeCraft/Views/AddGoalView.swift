@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct AddActivityView: View {
+struct AddGoalView: View {
     @Environment(\.dismiss) var dismiss
 
-    // State for the activity details
+    // State for the goal details
     @State private var id: UUID? // To keep track of existing ID if editing
     @State private var name: String = ""
     @State private var targetHours: Int = 1
@@ -11,26 +11,26 @@ struct AddActivityView: View {
     @State private var selectedColor: Color = .blue
     @State private var iconName: String = "circle.fill"
 
-    // Activity to edit (optional)
-    let activityToEdit: Activity?
+    // Goal to edit (optional)
+    let goalToEdit: Goal?
 
-    // Callback to pass the saved activity (new or updated) to the parent view
-    var onSave: (Activity) -> Void
+    // Callback to pass the saved goal (new or updated) to the parent view
+    var onSave: (Goal) -> Void
 
     // Initializer to pre-fill form if editing
-    init(activityToEdit: Activity? = nil, onSave: @escaping (Activity) -> Void) {
-        self.activityToEdit = activityToEdit
+    init(goalToEdit: Goal? = nil, onSave: @escaping (Goal) -> Void) {
+        self.goalToEdit = goalToEdit
         self.onSave = onSave
 
-        if let activity = activityToEdit {
-            _id = State(initialValue: activity.id)
-            _name = State(initialValue: activity.name)
-            _targetHours = State(initialValue: Int(activity.targetDuration / 3600))
-            _targetMinutes = State(initialValue: Int((activity.targetDuration.truncatingRemainder(dividingBy: 3600)) / 60))
-            _selectedColor = State(initialValue: activity.color) // Assuming Activity.color is SwiftUI.Color
-            _iconName = State(initialValue: activity.iconName)
+        if let goal = goalToEdit {
+            _id = State(initialValue: goal.id)
+            _name = State(initialValue: goal.name)
+            _targetHours = State(initialValue: Int(goal.targetDuration / 3600))
+            _targetMinutes = State(initialValue: Int((goal.targetDuration.truncatingRemainder(dividingBy: 3600)) / 60))
+            _selectedColor = State(initialValue: goal.color) // Assuming Goal.color is SwiftUI.Color
+            _iconName = State(initialValue: goal.iconName)
         } else {
-            // Default values are already set by @State declarations for new activity
+            // Default values are already set by @State declarations for new goal
         }
     }
 
@@ -51,8 +51,8 @@ struct AddActivityView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Activity Details")) {
-                    TextField("Activity Name", text: $name)
+                Section(header: Text("Goal Details")) {
+                    TextField("Goal Name", text: $name)
                     
                     VStack(alignment: .leading) {
                         Text("Target Duration")
@@ -66,7 +66,7 @@ struct AddActivityView: View {
                         }
                     }
                     
-                    ColorPicker("Activity Color", selection: $selectedColor)
+                    ColorPicker("Goal Color", selection: $selectedColor)
                     
                     HStack {
                         Text("Icon Name (SF Symbol)")
@@ -74,17 +74,17 @@ struct AddActivityView: View {
                     }
                 }
             }
-            .navigationTitle(activityToEdit == nil ? "Add New Activity" : "Edit Activity")
+            .navigationTitle(goalToEdit == nil ? "Add New Goal" : "Edit Goal")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        let finalID = activityToEdit?.id ?? UUID()
-                        let originalElapsedTime = activityToEdit?.elapsedTime ?? 0
+                        let finalID = goalToEdit?.id ?? UUID()
+                        let originalElapsedTime = goalToEdit?.elapsedTime ?? 0
                         
-                        let savedActivity = Activity(
+                        let savedGoal = Goal(
                             id: finalID,
                             name: name,
                             targetDuration: targetDurationInSeconds,
@@ -92,7 +92,7 @@ struct AddActivityView: View {
                             colorHex: hexString(from: selectedColor),
                             iconName: iconName.isEmpty ? "circle.fill" : iconName
                         )
-                        onSave(savedActivity)
+                        onSave(savedGoal)
                         dismiss()
                     }
                     .disabled(name.isEmpty)
@@ -103,14 +103,14 @@ struct AddActivityView: View {
     }
 }
 
-// Preview for AddActivityView
-struct AddActivityView_Previews: PreviewProvider {
+// Preview for AddGoalView
+struct AddGoalView_Previews: PreviewProvider {
     static var previews: some View {
-        // Preview for adding a new activity
-        AddActivityView(onSave: { activity in print("Preview (New): \(activity.name)") })
+        // Preview for adding a new goal
+        AddGoalView(onSave: { goal in print("Preview (New): \(goal.name)") })
         
-        // Preview for editing an existing activity (requires a sample Activity)
-        let sampleActivity = Activity(name: "Sample Edit", targetDuration: 3600, colorHex: "#FF0000", iconName: "star.fill")
-        AddActivityView(activityToEdit: sampleActivity, onSave: { activity in print("Preview (Edit): \(activity.name)") })
+        // Preview for editing an existing goal (requires a sample Goal)
+        let sampleGoal = Goal(name: "Sample Edit", targetDuration: 3600, colorHex: "#FF0000", iconName: "star.fill")
+        AddGoalView(goalToEdit: sampleGoal, onSave: { goal in print("Preview (Edit): \(goal.name)") })
     }
 } 

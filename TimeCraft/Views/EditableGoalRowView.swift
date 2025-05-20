@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct EditableActivityRowView: View {
-    @Binding var activity: Activity
-    var onSave: (Activity) -> Void
+struct EditableGoalRowView: View {
+    @Binding var goal: Goal
+    var onSave: (Goal) -> Void
     var onDelete: () -> Void
 
     @State private var isEditingName: Bool = false
@@ -17,21 +17,21 @@ struct EditableActivityRowView: View {
         HStack(spacing: 12) {
             // Color Dot and Color Picker
             Circle()
-                .fill(activity.color)
+                .fill(goal.color)
                 .frame(width: 20, height: 20)
                 .onTapGesture {
                     showingColorPicker = true
                 }
                 .popover(isPresented: $showingColorPicker) {
                     ColorSwatchView(selectedColorHex: Binding(
-                        get: { activity.colorHex },
+                        get: { goal.colorHex },
                         set: { (newHex: String) in
-                            var updatedActivity = activity
-                            updatedActivity.colorHex = newHex
+                            var updatedGoal = goal
+                            updatedGoal.colorHex = newHex
                             // It's important that onSave is called to persist the change
-                            // and ensure the @Binding activity reflects the update immediately
+                            // and ensure the @Binding goal reflects the update immediately
                             // if the source of truth relies on it.
-                            onSave(updatedActivity)
+                            onSave(updatedGoal)
                         }
                     ), onColorSelected: { selectedHex in
                         // This callback is used by ColorSwatchView to update the binding.
@@ -42,30 +42,30 @@ struct EditableActivityRowView: View {
                     })
                 }
 
-            // Activity Name (Text or TextField)
+            // Goal Name (Text or TextField)
             if isEditingName {
-                TextField("Activity Name", text: $editingName, onCommit: {
-                    var updatedActivity = activity
-                    updatedActivity.name = editingName
-                    onSave(updatedActivity)
+                TextField("Goal Name", text: $editingName, onCommit: {
+                    var updatedGoal = goal
+                    updatedGoal.name = editingName
+                    onSave(updatedGoal)
                     isEditingName = false
                 })
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 Button(action: {
-                    var updatedActivity = activity
-                    updatedActivity.name = editingName
-                    onSave(updatedActivity)
+                    var updatedGoal = goal
+                    updatedGoal.name = editingName
+                    onSave(updatedGoal)
                     isEditingName = false
                 }) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
                 }
             } else {
-                Text(activity.name)
+                Text(goal.name)
                     .font(.appFont(size: 16, weight: .medium))
                     .foregroundColor(.primaryText)
                     .onTapGesture {
-                        editingName = activity.name
+                        editingName = goal.name
                         isEditingName = true
                     }
             }
@@ -73,11 +73,11 @@ struct EditableActivityRowView: View {
             Spacer()
             
             // Target Duration (Text, and Picker for editing)
-            Text("Goal: \(formatTimeInterval(activity.targetDuration))")
+            Text("Goal: \(formatTimeInterval(goal.targetDuration))")
                 .font(.appCaption)
                 .foregroundColor(.secondaryText)
                 .onTapGesture {
-                    let components = durationComponents(from: activity.targetDuration)
+                    let components = durationComponents(from: goal.targetDuration)
                     editingHours = components.hours
                     editingMinutes = components.minutes
                     showingDurationPicker = true
@@ -112,9 +112,9 @@ struct EditableActivityRowView: View {
                         }
                         
                         Button("Set Duration") {
-                            var updatedActivity = activity
-                            updatedActivity.targetDuration = TimeInterval((editingHours * 3600) + (editingMinutes * 60))
-                            onSave(updatedActivity)
+                            var updatedGoal = goal
+                            updatedGoal.targetDuration = TimeInterval((editingHours * 3600) + (editingMinutes * 60))
+                            onSave(updatedGoal)
                             showingDurationPicker = false
                         }
                         .padding()
@@ -132,9 +132,9 @@ struct EditableActivityRowView: View {
         }
         .padding(.vertical, 6)
         .onAppear {
-            // Initialize editingName if activity name changes from outside
+            // Initialize editingName if goal name changes from outside
             // This might not be strictly necessary if using @Binding correctly throughout
-            editingName = activity.name
+            editingName = goal.name
         }
     }
 
@@ -145,10 +145,10 @@ struct EditableActivityRowView: View {
 // Removed: // extension Color { ... }
 
 // Preview
-struct EditableActivityRowView_Previews: PreviewProvider {
+struct EditableGoalRowView_Previews: PreviewProvider {
     static var previews: some View {
-        // Create a sample activity binding for the preview
-        @State var sampleActivity = Activity(
+        // Create a sample goal binding for the preview
+        @State var sampleGoal = Goal(
             name: "Deep Work",
             targetDuration: 2 * 3600,
             elapsedTime: 30 * 60,
@@ -156,10 +156,10 @@ struct EditableActivityRowView_Previews: PreviewProvider {
             iconName: "brain.head.profile"
         )
 
-        EditableActivityRowView(activity: $sampleActivity, onSave: { updatedActivity in
-            print("Preview: Save \(updatedActivity.name)")
+        EditableGoalRowView(goal: $sampleGoal, onSave: { updatedGoal in
+            print("Preview: Save \(updatedGoal.name)")
         }, onDelete: {
-            print("Preview: Delete activity")
+            print("Preview: Delete goal")
         })
         .padding()
         .background(Color.appBackground)

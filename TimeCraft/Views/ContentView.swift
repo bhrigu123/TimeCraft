@@ -2,9 +2,9 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var showSettings: Bool = false
-    @ObservedObject var timerService: ActivityTimerService
+    @ObservedObject var timerService: GoalTimerService
 
-    init(timerService: ActivityTimerService) {
+    init(timerService: GoalTimerService) {
         self.timerService = timerService
         // Apply global Picker styling if desired (for SegmentedPickerStyle)
         // UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(Color.appAccent)
@@ -63,7 +63,7 @@ struct ContentView: View {
                 SettingsView(timerService: timerService)
                     .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
             } else {
-                ActivitiesView(timerService: timerService)
+                GoalsView(timerService: timerService)
                     .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
             }
             
@@ -77,7 +77,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(timerService: ActivityTimerService())
+        ContentView(timerService: GoalTimerService())
             .frame(width: 320, height: 450)
     }
 } 

@@ -1,7 +1,10 @@
 import SwiftUI
 import Combine
+import os.log
+import AppKit
 
 class GoalTimerService: ObservableObject {
+    private let logger = Logger(subsystem: "com.timecraft", category: "GoalTimerService")
     @AppStorage("goals") private var goalsData: Data = Data()
     @Published private(set) var goals: [Goal] = []
 
@@ -10,6 +13,8 @@ class GoalTimerService: ObservableObject {
     
     private var timer: Timer? = nil
     private var cancellables = Set<AnyCancellable>()
+    private var lastSaveTime: Date = Date()
+    private let saveInterval: TimeInterval = 60.0 // Save every 60 seconds
 
     init() {
         // Load initial goals
@@ -24,14 +29,31 @@ class GoalTimerService: ObservableObject {
             
         // Check for new day and reset if needed when app starts
         checkAndResetForNewDay()
+        
+        // Add observer for app termination
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(saveCurrentStateBeforeQuit),
+            name: NSApplication.willTerminateNotification,
+            object: nil
+        )
     }
     
     private func loadGoals() {
-        if let decodedGoals = try? JSONDecoder().decode([Goal].self, from: goalsData) {
+        do {
+            if goalsData.isEmpty {
+                logger.info("No goals data found in storage")
+                goals = []
+                return
+            }
+            
+            let decodedGoals = try JSONDecoder().decode([Goal].self, from: goalsData)
+            logger.info("Successfully loaded \(decodedGoals.count) goals from storage")
             DispatchQueue.main.async { [weak self] in
                 self?.goals = decodedGoals
             }
-        } else {
+        } catch {
+            logger.error("Failed to decode goals: \(error.localizedDescription)")
             DispatchQueue.main.async { [weak self] in
                 self?.goals = []
             }
@@ -39,23 +61,32 @@ class GoalTimerService: ObservableObject {
     }
     
     func saveGoals(_ updatedGoals: [Goal]) {
-        if let encodedGoals = try? JSONEncoder().encode(updatedGoals) {
+        do {
+            let encodedGoals = try JSONEncoder().encode(updatedGoals)
             goalsData = encodedGoals
+            logger.info("Successfully saved \(updatedGoals.count) goals to storage")
+            
             // Update the published property on the main queue
             DispatchQueue.main.async { [weak self] in
                 self?.goals = updatedGoals
             }
-        } else {
-            print("Error encoding goals in TimerService")
+        } catch {
+            logger.error("Failed to encode goals: \(error.localizedDescription)")
         }
     }
     
     private func checkAndResetForNewDay() {
         var updatedGoals = self.goals
+        var needsSave = false
+        
         for i in 0..<updatedGoals.count {
             updatedGoals[i].checkAndResetForNewDay()
+            needsSave = true // Always save after checking for new day
         }
-        saveGoals(updatedGoals)
+        
+        if needsSave {
+            saveGoals(updatedGoals)
+        }
     }
 
     func goal(with id: UUID) -> Goal? {
@@ -63,7 +94,10 @@ class GoalTimerService: ObservableObject {
     }
 
     func startTimer(for goalID: UUID) {
-        guard let goalToStart = goal(with: goalID) else { return }
+        guard let goalToStart = goal(with: goalID) else {
+            logger.error("Attempted to start timer for non-existent goal: \(goalID)")
+            return
+        }
 
         if let currentActiveID = activeGoalID, currentActiveID != goalID {
             // Stop any existing timer for a different goal
@@ -72,14 +106,23 @@ class GoalTimerService: ObservableObject {
         
         activeGoalID = goalID
         currentElapsedTimeForActiveGoal = goalToStart.todayProgress
+        lastSaveTime = Date()
 
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.currentElapsedTimeForActiveGoal += 1
-            // Update the goal's daily progress periodically
+            
+            // Update the goal's daily progress in memory
             if let currentActiveID = self.activeGoalID {
-                self.updateGoalDailyProgress(goalID: currentActiveID, newTime: self.currentElapsedTimeForActiveGoal)
+                self.updateGoalDailyProgressInMemory(goalID: currentActiveID, newTime: self.currentElapsedTimeForActiveGoal)
+                
+                // Save to storage periodically
+                let now = Date()
+                if now.timeIntervalSince(self.lastSaveTime) >= self.saveInterval {
+                    self.saveActiveGoalProgress()
+                    self.lastSaveTime = now
+                }
             }
         }
     }
@@ -89,24 +132,31 @@ class GoalTimerService: ObservableObject {
         timer = nil
         // Save current progress when stopping
         if let currentActiveID = activeGoalID {
-            updateGoalDailyProgress(goalID: currentActiveID, newTime: currentElapsedTimeForActiveGoal)
+            saveActiveGoalProgress()
         }
         activeGoalID = nil
         currentElapsedTimeForActiveGoal = 0
     }
     
-    private func updateGoalDailyProgress(goalID: UUID, newTime: TimeInterval) {
-        var updatedGoals = self.goals
-        if let index = updatedGoals.firstIndex(where: { $0.id == goalID }) {
-            updatedGoals[index].updateTodayProgress(newTime)
-            saveGoals(updatedGoals)
-        } else {
-            print("Error: Tried to update non-existent goal")
+    private func updateGoalDailyProgressInMemory(goalID: UUID, newTime: TimeInterval) {
+        if let index = goals.firstIndex(where: { $0.id == goalID }) {
+            goals[index].updateTodayProgress(newTime)
         }
     }
     
-    // Call this when the app is about to terminate to ensure progress is saved
-    func saveCurrentStateBeforeQuit() {
+    private func saveActiveGoalProgress() {
+        guard let activeID = activeGoalID else { return }
+        
+        var updatedGoals = self.goals
+        if let index = updatedGoals.firstIndex(where: { $0.id == activeID }) {
+            updatedGoals[index].updateTodayProgress(currentElapsedTimeForActiveGoal)
+            saveGoals(updatedGoals)
+            logger.info("Saved progress for active goal: \(activeID)")
+        }
+    }
+    
+    @objc func saveCurrentStateBeforeQuit() {
+        logger.info("App terminating, saving current state")
         if activeGoalID != nil {
             stopTimer()
         }

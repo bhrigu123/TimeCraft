@@ -1,7 +1,14 @@
 import SwiftUI
 
+// Define navigation states
+enum NavigationState {
+    case goals
+    case configuration
+    case stats
+}
+
 struct ContentView: View {
-    @State private var showSettings: Bool = false
+    @State private var navigationState: NavigationState = .goals
     @ObservedObject var timerService: GoalTimerService
 
     init(timerService: GoalTimerService) {
@@ -15,11 +22,34 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header with title and settings icon
+            // Header with navigation controls
             HStack {
-                if showSettings {
-                    // Back button when in settings
-                    Button(action: { showSettings = false }) {
+                switch navigationState {
+                case .goals:
+                    // Configuration button
+                    Button(action: { navigationState = .configuration }) {
+                        Image(systemName: "wrench.adjustable")
+                            .font(.system(size: 14, weight: .medium))
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    Spacer()
+                    
+                    Text("Today's goals")
+                        .font(.system(size: 18, weight: .semibold))
+                    
+                    Spacer()
+                    
+                    // Stats button
+                    Button(action: { navigationState = .stats }) {
+                        Image(systemName: "chart.bar")
+                            .font(.system(size: 14, weight: .medium))
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
+                case .configuration, .stats:
+                    // Back button
+                    Button(action: { navigationState = .goals }) {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 16, weight: .medium))
                     }
@@ -27,7 +57,8 @@ struct ContentView: View {
                     
                     Spacer()
                     
-                    Text("Settings")
+                    // Title based on current view
+                    Text(navigationState == .configuration ? "Configure Goals" : "Statistics")
                         .font(.system(size: 18, weight: .semibold))
                     
                     Spacer()
@@ -35,35 +66,21 @@ struct ContentView: View {
                     // Empty view for balance
                     Color.clear
                         .frame(width: 16, height: 16)
-                } else {
-                    // Empty space to balance the gear button
-                    Color.clear
-                        .frame(width: 16, height: 16)
-                        
-                    Spacer()
-                    
-                    // Title for goals view
-                    Text("Today's goals")
-                        .font(.system(size: 18, weight: .semibold))
-                    
-                    Spacer()
-                    
-                    Button(action: { showSettings = true }) {
-                        Image(systemName: "gear")
-                            .font(.system(size: 16, weight: .medium))
-                    }
-                    .buttonStyle(PlainButtonStyle())
                 }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
 
             // Content based on navigation state
-            if showSettings {
+            switch navigationState {
+            case .goals:
+                GoalsView(timerService: timerService)
+                    .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
+            case .configuration:
                 SettingsView(timerService: timerService)
                     .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
-            } else {
-                GoalsView(timerService: timerService)
+            case .stats:
+                StatsView()
                     .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
             }
             

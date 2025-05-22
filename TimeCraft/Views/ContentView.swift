@@ -13,11 +13,6 @@ struct ContentView: View {
 
     init(timerService: GoalTimerService) {
         self.timerService = timerService
-        // Apply global Picker styling if desired (for SegmentedPickerStyle)
-        // UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(Color.appAccent)
-        // UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
-        // UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(Color.primaryText)], for: .normal)
-        // Note: UISegmentedControl appearance is for UIKit. For pure SwiftUI on macOS, direct styling is different.
     }
 
     var body: some View {
@@ -83,12 +78,9 @@ struct ContentView: View {
                 StatsView()
                     .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
             }
-            
-            // Footer (like the reset button and version)
-            // We can add this later when styling
         }
-        .background(Color.appBackground) // Apply overall background color
-        .edgesIgnoringSafeArea(.all) // Extend background to edges if popover allows
+        .background(Color.appBackground) 
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

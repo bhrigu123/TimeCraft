@@ -23,27 +23,27 @@ extension Color {
     // Add more colors as needed, e.g., for icons, borders, etc.
 }
 
-// MARK: - Predefined Activity Colors
-struct ActivityColor: Identifiable, Hashable {
+// MARK: - Predefined Goal Colors
+struct GoalColor: Identifiable, Hashable {
     let id = UUID()
     let color: Color
     let hex: String
 }
 
 extension Color {
-    static let predefinedActivityColors: [ActivityColor] = [
+    static let predefinedGoalColors: [GoalColor] = [
         // Row 1
-        ActivityColor(color: Color(hex: "#555555")!, hex: "#555555"), // Dark Gray
-        ActivityColor(color: Color(hex: "#AAAAAA")!, hex: "#AAAAAA"), // Light Gray
-        ActivityColor(color: Color(hex: "#A0522D")!, hex: "#A0522D"), // Brown (Sienna)
-        ActivityColor(color: Color(hex: "#FFD700")!, hex: "#FFD700"), // Gold
-        ActivityColor(color: Color(hex: "#FFA500")!, hex: "#FFA500"), // Orange
+        GoalColor(color: Color(hex: "#555555")!, hex: "#555555"), // Dark Gray
+        GoalColor(color: Color(hex: "#AAAAAA")!, hex: "#AAAAAA"), // Light Gray
+        GoalColor(color: Color(hex: "#A0522D")!, hex: "#A0522D"), // Brown (Sienna)
+        GoalColor(color: Color(hex: "#FFD700")!, hex: "#FFD700"), // Gold
+        GoalColor(color: Color(hex: "#FFA500")!, hex: "#FFA500"), // Orange
         // Row 2
-        ActivityColor(color: Color(hex: "#2E8B57")!, hex: "#2E8B57"), // Green (SeaGreen)
-        ActivityColor(color: Color(hex: "#4682B4")!, hex: "#4682B4"), // Blue (SteelBlue)
-        ActivityColor(color: Color(hex: "#8A2BE2")!, hex: "#8A2BE2"), // Purple (BlueViolet)
-        ActivityColor(color: Color(hex: "#FF69B4")!, hex: "#FF69B4"), // Pink (HotPink)
-        ActivityColor(color: Color(hex: "#DC143C")!, hex: "#DC143C")  // Red (Crimson)
+        GoalColor(color: Color(hex: "#2E8B57")!, hex: "#2E8B57"), // Green (SeaGreen)
+        GoalColor(color: Color(hex: "#4682B4")!, hex: "#4682B4"), // Blue (SteelBlue)
+        GoalColor(color: Color(hex: "#8A2BE2")!, hex: "#8A2BE2"), // Purple (BlueViolet)
+        GoalColor(color: Color(hex: "#FF69B4")!, hex: "#FF69B4"), // Pink (HotPink)
+        GoalColor(color: Color(hex: "#DC143C")!, hex: "#DC143C")  // Red (Crimson)
     ]
 }
 

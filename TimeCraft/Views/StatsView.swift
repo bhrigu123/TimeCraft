@@ -18,7 +18,7 @@ struct StatsView: View {
                 .padding(.horizontal)
             
             Button(action: {
-                if let url = URL(string: "https://github.com/yourusername/TimeCraft/issues/1") {
+                if let url = URL(string: "https://github.com/bhrigu123/TimeCraft/issues/1") {
                     NSWorkspace.shared.open(url)
                 }
             }) {

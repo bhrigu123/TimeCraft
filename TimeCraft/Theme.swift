@@ -93,10 +93,9 @@ extension Color {
     // Instance method to convert Color to Hex String
     func toHex() -> String? {
         guard let cgColor = self.cgColor else {
-            #if os(macOS)
             // On macOS, NSColor needs to be converted to CGColor via a compatible color space.
             // This is a simplified handling; a more robust solution might be needed
-            // depending on the color spaces used in your app.
+            // depending on the color spaces used.
             guard let nsColor = NSColor(self).usingColorSpace(.sRGB) else { return nil}
             var red: CGFloat = 0
             var green: CGFloat = 0
@@ -107,10 +106,7 @@ extension Color {
                           lround(Double(red * 255)), 
                           lround(Double(green * 255)), 
                           lround(Double(blue * 255)))
-            #else
-            // For iOS, watchOS, tvOS, .cgColor should typically work directly if color is convertible.
-            return nil
-            #endif
+
         }
         
         let components = cgColor.components

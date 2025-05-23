@@ -1,12 +1,5 @@
 import SwiftUI
 
-// Define navigation states
-enum NavigationState {
-    case goals
-    case configuration
-    case stats
-}
-
 struct ContentView: View {
     @State private var navigationState: NavigationState = .goals
     @ObservedObject var timerService: GoalTimerService

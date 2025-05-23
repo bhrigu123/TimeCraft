@@ -6,7 +6,7 @@ struct ColorSwatchView: View {
     let onColorSelected: (String) -> Void
     @Environment(\.dismiss) var dismiss
 
-    // Define the grid layout: 5 columns
+    // Grid layout: 5 columns
     private let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 5)
 
     var body: some View {
@@ -19,7 +19,7 @@ struct ColorSwatchView: View {
                         Circle()
                             .stroke(Color.primary.opacity(0.5), lineWidth: selectedColorHex == activityColor.hex ? 3 : 0)
                     )
-                    .padding(2) // Padding to make the stroke more visible if it's at the edge
+                    .padding(2) 
                     .onTapGesture {
                         selectedColorHex = activityColor.hex
                         onColorSelected(activityColor.hex)
@@ -34,8 +34,7 @@ struct ColorSwatchView: View {
 
 struct ColorSwatchView_Previews: PreviewProvider {
     static var previews: some View {
-        // Sample binding for preview
-        @State var previewSelectedHex = Color.predefinedGoalColors[3].hex // Gold
+        @State var previewSelectedHex = Color.predefinedGoalColors[3].hex 
         
         ColorSwatchView(selectedColorHex: $previewSelectedHex, onColorSelected: { hex in
             print("Preview: Color selected: \(hex)")

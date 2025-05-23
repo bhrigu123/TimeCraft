@@ -110,13 +110,9 @@ struct EditableGoalRowView: View {
                                 Text("\(hour)h").tag(hour)
                             }
                         }
-                        #if os(macOS)
                         .frame(width: 80)
                         .labelsHidden()
-                        #else
-                        .pickerStyle(WheelPickerStyle())
-                        .frame(width: 100)
-                        #endif
+
                     }
                     
                     VStack {
@@ -126,13 +122,8 @@ struct EditableGoalRowView: View {
                                 Text("\(minute)m").tag(minute)
                             }
                         }
-                        #if os(macOS)
                         .frame(width: 80)
                         .labelsHidden()
-                        #else
-                        .pickerStyle(WheelPickerStyle())
-                        .frame(width: 100)
-                        #endif
                     }
                 }
                 
@@ -158,13 +149,9 @@ struct EditableGoalRowView: View {
     }
 }
 
-// Helper extension for Color toHex is removed as it should be in a central place.
-// Removed: // extension Color { ... }
-
 // Preview
 struct EditableGoalRowView_Previews: PreviewProvider {
     static var previews: some View {
-        // Create a sample goal binding for the preview
         @State var sampleGoal = Goal(
             name: "Deep Work",
             targetDuration: 2 * 3600,

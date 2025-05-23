@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct GoalCardView: View {
-    // Use a non-optional Goal, ensure it's always passed correctly
     let goal: Goal 
     @ObservedObject var timerService: GoalTimerService
 

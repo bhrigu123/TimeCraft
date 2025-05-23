@@ -9,37 +9,34 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var iconItem: NSStatusItem?
     var textItem: NSStatusItem?
     var popover: NSPopover?
-    var timerService: GoalTimerService? // Hold the timer service instance
+    var timerService: GoalTimerService?
     private var cancellables = Set<AnyCancellable>()
 
-    // Called when the application has finished launching and is ready to run.
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Create the timer service instance
         let timerService = GoalTimerService()
         self.timerService = timerService
 
-        // Create the icon status item with fixed width
+        // Menu bar icon with fixed width
         iconItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = iconItem?.button {
             button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Timer")
             button.action = #selector(togglePopover(_:))
         }
         
-        // Create the text status item (initially hidden)
+        // Text item for active goal (initially hidden)
         textItem = NSStatusBar.system.statusItem(withLength: 0)
         if let textButton = textItem?.button {
-            // When text is clicked, show popover from the icon item
+            // When text is clicked, show popover from the icon on the menu bar
             textButton.action = #selector(togglePopover(_:))
         }
 
-        // Create and configure the popover.
+        // Popover window that appears when the menu bar icon is clicked
         popover = NSPopover()
         popover?.contentSize = NSSize(width: 320, height: 450) 
         popover?.behavior = .transient
-        // Pass the timerService to ContentView
         popover?.contentViewController = NSHostingController(rootView: ContentView(timerService: timerService))
 
-        // Subscribe to timer service changes
+        // Subscribe to timer service changes to update the menu bar text
         setupTimerObservers(timerService)
     }
 

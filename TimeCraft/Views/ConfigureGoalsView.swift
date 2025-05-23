@@ -5,7 +5,7 @@ struct ConfigureGoalsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Full-width Add New button with glassy effect
+            // Add New button
             Button(action: addNewGoal) {
                 HStack {
                     Image(systemName: "plus.circle.fill")
@@ -22,7 +22,7 @@ struct ConfigureGoalsView: View {
             .foregroundColor(.appAccent)
             .padding()
 
-            // List of goals using EditableGoalRowView
+            // List of goals
             List {
                 let enumeratedGoals = Array(timerService.goals.enumerated())
                 ForEach(enumeratedGoals, id: \.element.id) { index, goal in
@@ -70,7 +70,7 @@ struct ConfigureGoalsView: View {
 
             // Footer
             HStack {
-                Text("v1.0.0") // Consider making this dynamic from App Bundle
+                Text("v1.0.0") // TODO: Make this dynamic from App Bundle
                     .font(.appCaption)
                     .foregroundColor(.secondaryText)
             }
@@ -82,8 +82,8 @@ struct ConfigureGoalsView: View {
     private func addNewGoal() {
         let newGoal = Goal(
             name: "New Goal", 
-            targetDuration: 3600, // Default to 1 hour
-            colorHex: Color.gray.toHex() ?? "#8E8E93", // Default to a generic color
+            targetDuration: 3600, // Default: 1 hour
+            colorHex: Color.gray.toHex() ?? "#8E8E93", // Default: a generic color
             iconName: "list.star" // Default icon
         )
         var updatedGoals = timerService.goals
@@ -94,10 +94,9 @@ struct ConfigureGoalsView: View {
 
 struct ConfigureGoalsView_Previews: PreviewProvider {
     static var previews: some View {
-        // Create a mock GoalTimerService for the preview
         let mockTimerService = GoalTimerService()
         
         ConfigureGoalsView(timerService: mockTimerService)
-            .frame(width: 350, height: 500) // Adjusted frame for better preview
+            .frame(width: 350, height: 500) 
     }
 } 

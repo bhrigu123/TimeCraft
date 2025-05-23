@@ -72,7 +72,7 @@ struct ContentView: View {
                 GoalsView(timerService: timerService)
                     .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
             case .configuration:
-                SettingsView(timerService: timerService)
+                ConfigureGoalsView(timerService: timerService)
                     .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
             case .stats:
                 StatsView()

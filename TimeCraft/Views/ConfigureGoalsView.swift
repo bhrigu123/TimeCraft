@@ -1,24 +1,25 @@
 import SwiftUI
 
-struct SettingsView: View {
+struct ConfigureGoalsView: View {
     @ObservedObject var timerService: GoalTimerService
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header: Goals count and Add New button
-            HStack {
-                Text("Goals (\(timerService.goals.count))")
-                    .font(.appHeadline)
-                    .foregroundColor(.primaryText)
-                Spacer()
-                Button(action: addNewGoal) {
-                    HStack {
-                        Image(systemName: "plus")
-                        Text("Add New").font(.appButton)
-                    }
-                    .foregroundColor(.appAccent)
+            // Full-width Add New button with glassy effect
+            Button(action: addNewGoal) {
+                HStack {
+                    Image(systemName: "plus.circle.fill")
+                        .imageScale(.medium)
+                    Text("Add New Goal")
+                        .font(.appButton)
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(.ultraThinMaterial)
+                .cornerRadius(12)
             }
+            .buttonStyle(.plain)
+            .foregroundColor(.appAccent)
             .padding()
 
             // List of goals using EditableGoalRowView
@@ -88,12 +89,12 @@ struct SettingsView: View {
     }
 }
 
-struct SettingsView_Previews: PreviewProvider {
+struct ConfigureGoalsView_Previews: PreviewProvider {
     static var previews: some View {
         // Create a mock GoalTimerService for the preview
         let mockTimerService = GoalTimerService()
         
-        SettingsView(timerService: mockTimerService)
+        ConfigureGoalsView(timerService: mockTimerService)
             .frame(width: 350, height: 500) // Adjusted frame for better preview
     }
 } 

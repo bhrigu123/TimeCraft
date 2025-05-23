@@ -20,13 +20,14 @@ struct GoalCardView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(spacing: 8) {
-                HStack {
+            VStack(spacing: 12) {
+                HStack(alignment: .top) {
                     Text(goal.name)
                         .font(.appFont(size: 18, weight: .medium))
                         .foregroundColor(.primaryText)
-                    
-                    Spacer()
+                        .lineLimit(2)
+                        .frame(height: 45, alignment: .leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     
                     // Play/Pause button
                     Button(action: {
@@ -41,6 +42,7 @@ struct GoalCardView: View {
                             .foregroundColor(.appAccent)
                     }
                     .buttonStyle(.plain)
+                    .padding(.top, 4)
                 }
 
                 // Custom Progress Bar
@@ -73,26 +75,29 @@ struct GoalCardView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.vertical, 12)
+            .padding(.vertical, 16)
             .background(
                 ZStack {
                     // Very translucent background using the goal's color
-                    goal.color.opacity(0.08)
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(goal.color.opacity(0.08))
                     
                     // Active indicator on the leading edge
                     if isThisGoalActive {
-                        HStack {
+                        HStack(spacing: 0) {
                             Rectangle()
                                 .fill(goal.color)
                                 .frame(width: 4)
                             Spacer()
                         }
+                        .mask(
+                            RoundedRectangle(cornerRadius: 16)
+                        )
                     }
                 }
             )
-            
-            Divider()
-                .padding(.leading)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
         }
+        .padding(.bottom, 8)
     }
 } 

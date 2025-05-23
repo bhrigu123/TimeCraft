@@ -30,7 +30,7 @@ struct GoalsView: View {
             .background(Color.appBackground) // Apply here
         } else {
             ScrollView {
-                VStack(alignment: .leading, spacing: 15) {
+                VStack(alignment: .leading, spacing: 5) {
                     ForEach(goals) { goal in
                         // Pass the specific goal and the timer service to the card view
                         GoalCardView(goal: goal, timerService: timerService)

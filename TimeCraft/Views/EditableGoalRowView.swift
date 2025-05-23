@@ -11,110 +11,129 @@ struct EditableGoalRowView: View {
     @State private var showingDurationPicker: Bool = false
     @State private var editingHours: Int = 0
     @State private var editingMinutes: Int = 0
+    @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
-        HStack(spacing: 16) {
-            // Color Dot and Color Picker
-            Circle()
-                .fill(goal.color)
-                .frame(width: 24, height: 24)
-                .onTapGesture {
-                    showingColorPicker = true
-                }
-                .popover(isPresented: $showingColorPicker) {
-                    ColorSwatchView(selectedColorHex: Binding(
-                        get: { goal.colorHex },
-                        set: { (newHex: String) in
-                            var updatedGoal = goal
-                            updatedGoal.colorHex = newHex
-                            onSave(updatedGoal)
-                        }
-                    ), onColorSelected: { _ in })
-                }
-
-            VStack(alignment: .leading, spacing: 4) {
-                // Goal Name (Text or TextField)
-                if isEditingName {
-                    HStack(spacing: 8) {
-                        TextField("Goal Name", text: $editingName)
-                            .font(.appFont(size: 16, weight: .medium))
-                            .textFieldStyle(.plain)
-                            .onSubmit {
-                                saveNameChange()
-                            }
-                        
-                        Button(action: saveNameChange) {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.green)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                } else {
-                    Text(goal.name)
-                        .font(.appFont(size: 16, weight: .medium))
-                        .foregroundColor(.primaryText)
-                        .onTapGesture {
-                            editingName = goal.name
-                            isEditingName = true
-                        }
-                }
-                
-                // Target Duration
-                Text("Goal: \(formatTimeInterval(goal.targetDuration))")
-                    .font(.appCaption)
-                    .foregroundColor(.secondaryText)
+        VStack(spacing: 0) {
+            HStack(spacing: 16) {
+                // Color Dot and Color Picker
+                Circle()
+                    .fill(goal.color)
+                    .frame(width: 24, height: 24)
                     .onTapGesture {
-                        let components = durationComponents(from: goal.targetDuration)
-                        editingHours = components.hours
-                        editingMinutes = components.minutes
-                        showingDurationPicker = true
+                        showingColorPicker = true
                     }
-            }
+                    .popover(isPresented: $showingColorPicker) {
+                        ColorSwatchView(selectedColorHex: Binding(
+                            get: { goal.colorHex },
+                            set: { (newHex: String) in
+                                var updatedGoal = goal
+                                updatedGoal.colorHex = newHex
+                                onSave(updatedGoal)
+                            }
+                        ), onColorSelected: { _ in })
+                    }
 
-            Spacer()
-            
-            // Delete Button
-            Button(action: onDelete) {
-                Image(systemName: "trash")
-                    .foregroundColor(.destructiveAction)
-                    .opacity(0.7)
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-        )
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .popover(isPresented: $showingDurationPicker) {
-            VStack {
-                HStack {
-                    Picker("Hours", selection: $editingHours) {
-                        ForEach(0..<24) { hour in
-                            Text("\(hour)h").tag(hour)
+                VStack(alignment: .leading, spacing: 4) {
+                    // Goal Name (Text or TextField)
+                    if isEditingName {
+                        HStack(spacing: 8) {
+                            TextField("Goal Name", text: $editingName)
+                                .font(.appFont(size: 16, weight: .medium))
+                                .textFieldStyle(.plain)
+                                .focused($isTextFieldFocused)
+                                .onSubmit {
+                                    saveNameChange()
+                                }
+                            
+                            Button(action: saveNameChange) {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.green)
+                            }
+                            .buttonStyle(.plain)
+                            .transition(.opacity)
                         }
+                    } else {
+                        Text(goal.name)
+                            .font(.appFont(size: 16, weight: .medium))
+                            .foregroundColor(.primaryText)
+                            .onTapGesture {
+                                editingName = goal.name
+                                isEditingName = true
+                                // Focus the text field after a brief delay to ensure the view has updated
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    isTextFieldFocused = true
+                                }
+                            }
                     }
-                    #if os(macOS)
-                    .pickerStyle(MenuPickerStyle())
-                    #else
-                    .pickerStyle(WheelPickerStyle())
-                    #endif
-                    .frame(width: 100)
                     
-                    Picker("Minutes", selection: $editingMinutes) {
-                        ForEach(0..<60) { minute in
-                            Text("\(minute)m").tag(minute)
+                    // Target Duration
+                    Text("Goal: \(formatTimeInterval(goal.targetDuration))")
+                        .font(.appCaption)
+                        .foregroundColor(.secondaryText)
+                        .onTapGesture {
+                            let components = durationComponents(from: goal.targetDuration)
+                            editingHours = components.hours
+                            editingMinutes = components.minutes
+                            showingDurationPicker = true
                         }
+                }
+
+                Spacer()
+                
+                // Delete Button
+                Button(action: onDelete) {
+                    Image(systemName: "trash")
+                        .foregroundColor(.destructiveAction)
+                        .opacity(0.7)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 12)
+            
+            Divider()
+                .padding(.leading)
+        }
+        .onChange(of: isEditingName) { editing in
+            if !editing {
+                isTextFieldFocused = false
+            }
+        }
+        .popover(isPresented: $showingDurationPicker) {
+            VStack(spacing: 16) {
+                HStack(spacing: 24) {
+                    VStack {
+                        Text("Hours").font(.caption)
+                        Picker("", selection: $editingHours) {
+                            ForEach(0..<24) { hour in
+                                Text("\(hour)h").tag(hour)
+                            }
+                        }
+                        #if os(macOS)
+                        .frame(width: 80)
+                        .labelsHidden()
+                        #else
+                        .pickerStyle(WheelPickerStyle())
+                        .frame(width: 100)
+                        #endif
                     }
-                    #if os(macOS)
-                    .pickerStyle(MenuPickerStyle())
-                    #else
-                    .pickerStyle(WheelPickerStyle())
-                    #endif
-                    .frame(width: 100)
+                    
+                    VStack {
+                        Text("Minutes").font(.caption)
+                        Picker("", selection: $editingMinutes) {
+                            ForEach(0..<60) { minute in
+                                Text("\(minute)m").tag(minute)
+                            }
+                        }
+                        #if os(macOS)
+                        .frame(width: 80)
+                        .labelsHidden()
+                        #else
+                        .pickerStyle(WheelPickerStyle())
+                        .frame(width: 100)
+                        #endif
+                    }
                 }
                 
                 Button("Set Duration") {
@@ -123,10 +142,11 @@ struct EditableGoalRowView: View {
                     onSave(updatedGoal)
                     showingDurationPicker = false
                 }
-                .padding()
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
             }
             .padding()
-            .frame(minWidth: 250)
+            .frame(minWidth: 240)
         }
     }
     

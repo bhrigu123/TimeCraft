@@ -59,9 +59,12 @@ struct ConfigureGoalsView: View {
                             }
                         }
                     )
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
                 }
             }
-            .listStyle(InsetListStyle())
+            .listStyle(PlainListStyle())
             
             Spacer()
 

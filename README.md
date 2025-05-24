@@ -1,7 +1,7 @@
 # TimeCraft
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/bhrigu123/TimeCraft/main/TimeCraft/Assets.xcassets/AppIcon.appiconset/Icon-1024.png" width="128" height="128"/>
+<img src="https://raw.githubusercontent.com/bhrigu123/TimeCraft/refs/heads/main/TimeCraft/Assets.xcassets/AppIcon.appiconset/Icon-1024.png" width="128" height="128"/>
 </p>
 
 <p align="center"> 
@@ -10,10 +10,11 @@
 </p>
 
 <p align="center">
-
-[Features](#features) • [Installation](#installation) • [Contributing](#contributing) • [License](#license)
-
-</p>
+    <a href="#features">Features</a> •
+    <a href="#installation">Installation</a> •
+    <a href="#contributing">Contributing</a> •
+    <a href="#license">License</a>
+  </p>
 
 ## Overview
 

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ConfigureGoalsView: View {
     @ObservedObject var timerService: GoalTimerService
+    @State private var shouldScrollToTop = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -23,48 +24,60 @@ struct ConfigureGoalsView: View {
             .padding()
 
             // List of goals
-            List {
-                let enumeratedGoals = Array(timerService.goals.enumerated())
-                ForEach(enumeratedGoals, id: \.element.id) { index, goal in
-                    EditableGoalRowView(
-                        goal: Binding(
-                            get: { goal },
-                            set: { newValue in
+            ScrollViewReader { proxy in
+                List {
+                    ForEach(timerService.goals, id: \.id) { goal in
+                        EditableGoalRowView(
+                            goal: Binding(
+                                get: { goal },
+                                set: { newValue in
+                                    var mutableGoals = timerService.goals
+                                    if let foundIndex = mutableGoals.firstIndex(where: { $0.id == newValue.id }) {
+                                        mutableGoals[foundIndex] = newValue
+                                        timerService.saveGoals(mutableGoals)
+                                    }
+                                }
+                            ),
+                            onSave: { goalToSave in
                                 var mutableGoals = timerService.goals
-                                if let foundIndex = mutableGoals.firstIndex(where: { $0.id == newValue.id }) {
-                                    mutableGoals[foundIndex] = newValue
+                                if let foundIndex = mutableGoals.firstIndex(where: { $0.id == goalToSave.id }) {
+                                    mutableGoals[foundIndex] = goalToSave
                                     timerService.saveGoals(mutableGoals)
+                                } else {
+                                    print("Error: Goal to save not found in the list for onSave callback.")
+                                }
+                            },
+                            onDelete: {
+                                var currentGoals = timerService.goals
+                                if let foundIndex = currentGoals.firstIndex(where: { $0.id == goal.id }) {
+                                    if timerService.activeGoalID == goal.id {
+                                        timerService.stopTimer()
+                                    }
+                                    currentGoals.remove(at: foundIndex)
+                                    timerService.saveGoals(currentGoals)
+                                } else {
+                                    print("Error: Goal not found for deletion.")
                                 }
                             }
-                        ),
-                        onSave: { goalToSave in
-                            var mutableGoals = timerService.goals
-                            if let foundIndex = mutableGoals.firstIndex(where: { $0.id == goalToSave.id }) {
-                                mutableGoals[foundIndex] = goalToSave
-                                timerService.saveGoals(mutableGoals)
-                            } else {
-                                print("Error: Goal to save not found in the list for onSave callback.")
-                            }
-                        },
-                        onDelete: {
-                            var currentGoals = timerService.goals
-                            if let foundIndex = currentGoals.firstIndex(where: { $0.id == goal.id }) {
-                                if timerService.activeGoalID == goal.id {
-                                    timerService.stopTimer()
-                                }
-                                currentGoals.remove(at: foundIndex)
-                                timerService.saveGoals(currentGoals)
-                            } else {
-                                print("Error: Goal not found for deletion.")
+                        )
+                        .id(goal.id) // Add id for scrolling
+                        .listRowInsets(EdgeInsets())
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                    }
+                }
+                .listStyle(PlainListStyle())
+                .onChange(of: timerService.goals.count) { newCount in
+                    if shouldScrollToTop {
+                        withAnimation {
+                            if let firstGoal = timerService.goals.first {
+                                proxy.scrollTo(firstGoal.id, anchor: .top)
                             }
                         }
-                    )
-                    .listRowInsets(EdgeInsets())
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                        shouldScrollToTop = false
+                    }
                 }
             }
-            .listStyle(PlainListStyle())
             
             Spacer()
 
@@ -80,15 +93,8 @@ struct ConfigureGoalsView: View {
     }
 
     private func addNewGoal() {
-        let newGoal = Goal(
-            name: "New Goal", 
-            targetDuration: 3600, // Default: 1 hour
-            colorHex: Color.gray.toHex() ?? "#8E8E93", // Default: a generic color
-            iconName: "list.star" // Default icon
-        )
-        var updatedGoals = timerService.goals
-        updatedGoals.append(newGoal)
-        timerService.saveGoals(updatedGoals)
+        shouldScrollToTop = true
+        timerService.createNewGoal()
     }
 }
 

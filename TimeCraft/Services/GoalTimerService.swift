@@ -155,6 +155,24 @@ class GoalTimerService: ObservableObject {
         }
     }
     
+    func createNewGoal(name: String = "New Goal", targetDuration: TimeInterval = 3600) {
+        // Get a random color from predefined colors
+        let randomColorGoal = Color.predefinedGoalColors.randomElement() ?? Color.predefinedGoalColors[0]
+        
+        let newGoal = Goal(
+            name: name,
+            targetDuration: targetDuration,
+            colorHex: randomColorGoal.hex,
+            iconName: "list.star" // Default icon
+        )
+        
+        // Add the new goal at the beginning of the array
+        var updatedGoals = self.goals
+        updatedGoals.insert(newGoal, at: 0)
+        saveGoals(updatedGoals)
+        logger.info("Created new goal: \(name)")
+    }
+    
     @objc func saveCurrentStateBeforeQuit() {
         logger.info("App terminating, saving current state")
         if activeGoalID != nil {

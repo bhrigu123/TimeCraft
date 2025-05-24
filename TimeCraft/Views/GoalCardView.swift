@@ -19,10 +19,10 @@ struct GoalCardView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(spacing: 12) {
+            VStack(spacing: 8) {
                 HStack(alignment: .top) {
                     Text(goal.name)
-                        .font(.appFont(size: 18, weight: .medium))
+                        .font(.appFont(size: 16, weight: .medium))
                         .foregroundColor(.primaryText)
                         .lineLimit(2)
                         .frame(height: 45, alignment: .leading)
@@ -41,7 +41,7 @@ struct GoalCardView: View {
                             .foregroundColor(.appAccent)
                     }
                     .buttonStyle(.plain)
-                    .padding(.top, 4)
+                    .padding(.top, 2)
                 }
 
                 // Custom Progress Bar
@@ -68,9 +68,14 @@ struct GoalCardView: View {
                         .font(.appCaption)
                         .foregroundColor(.secondaryText)
                     Spacer()
-                    Text("\(formatTimeInterval(goal.targetDuration - currentDisplayElapsedTime)) remaining")
-                        .font(.appCaption)
-                        .foregroundColor(.secondaryText)
+                    if currentDisplayElapsedTime >= goal.targetDuration {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                    } else {
+                        Text("\(formatTimeInterval(goal.targetDuration - currentDisplayElapsedTime)) remaining")
+                            .font(.appCaption)
+                            .foregroundColor(.secondaryText)
+                    }
                 }
             }
             .padding(.horizontal)

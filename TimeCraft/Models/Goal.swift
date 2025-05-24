@@ -6,7 +6,7 @@ struct Goal: Identifiable, Codable {
     var targetDuration: TimeInterval // in seconds
     var elapsedTime: TimeInterval = 0 // in seconds
     var colorHex: String
-    var iconName: String
+    var iconName: String // Not being used right now
     
     // Store daily progress with date as key (YYYY-MM-DD format)
     var dailyProgress: [String: TimeInterval] = [:]

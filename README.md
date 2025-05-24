@@ -20,11 +20,17 @@
 
 <p align="center">
 
-Are you spending enough time every day on the things that are important to you?
+Are you spending enough time every day on the things that matter?
 
-TimeCraft is a lightweight MacOS app that lives on the menubar. You can configure different goals that you want to spend time on everyday, and track their time.
+TimeCraft is a lightweight MacOS app that lives on the menubar, and helps you track if you're giving enough time each day to the things that truly matter.
+You can configure different goals that you want to spend time on everyday, and track their time.
+Not just the urgent stuff, but the important things that are easy to skip.
 
-You start/stop the timers from the menubar before starting your activity. And at the end of the day, review if you met your goals. For me this serves as a constant reminder to take out some time for certain things that are important but are easy to overlook.
+I built this because I found myself constantly skipping things like deep work, or learning. Things that don't scream for attention, but shape who we become.
+
+> *Inspired by Cal Newport's hour tally system.*
+
+
 
 </p>
 
@@ -49,7 +55,7 @@ You start/stop the timers from the menubar before starting your activity. And at
 - Create and configure goals with target durations
 - Start/Stop timers on each goal with a single click
 - View active goal and elapsed time directly in the menu bar
-- Beautiful and intuitive interface for goal management
+- Intuitive interface for goal management
 - Seamless background operation while you focus on your work
 - Supports both light and dark mode
 
@@ -93,10 +99,6 @@ Feel free to share, open issues and contribute to this project! ❤️
 
 This project is licensed under the terms of the MIT License.  
 See [LICENSE](LICENSE) for details.
-
-## About
-
-I built TimeCraft because I kept running into this problem - there were things I really wanted to do every day, but they'd somehow always slip through the cracks. You know, those important-but-not-urgent things that are super easy to skip? I came across Cal Newport's method where he actually tracks his daily focus time and reviews it at the end of each day and week. So, TimeCraft was born. Whether you're trying to read more, write regularly, or just want to make sure you're spending enough time on things that matter to you, TimeCraft helps you keep track without getting in your way. For me, just seeing those timers in my menubar serves as a constant nudge to not skip the important stuff, and  hope it can do the same for you!
 
 ### Topics
 

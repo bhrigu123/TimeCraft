@@ -9,17 +9,16 @@
 
 </p>
 
-
 <p align="center">
 
 [Features](#features) • [Installation](#installation) • [Contributing](#contributing) • [License](#license)
 
 </p>
 
-
 ## Overview
 
 <p align="center>
+
 Are you spending enough time every day on the things that are important to you?
 
 TimeCraft is a lightweight MacOS app that lives on the menubar. You can configure different goals that you want to spend time on everyday, and track their time.
@@ -98,7 +97,7 @@ See [LICENSE](LICENSE) for details.
 
 ## About
 
-TimeCraft is designed to help you stay focused and accountable with your time. Whether you're a developer tracking coding hours, a writer monitoring writing sessions, or anyone looking to better manage their time, TimeCraft provides a frictionless way to track and analyze your time investment in various goals.
+I built TimeCraft because I kept running into this problem - there were things I really wanted to do every day, but they'd somehow always slip through the cracks. You know, those important-but-not-urgent things that are super easy to skip? I came across Cal Newport's method where he actually tracks his daily focus time and reviews it at the end of each day and week. So, TimeCraft was born. Whether you're trying to read more, write regularly, or just want to make sure you're spending enough time on things that matter to you, TimeCraft helps you keep track without getting in your way. For me, just seeing those timers in my menubar serves as a constant nudge to not skip the important stuff, and  hope it can do the same for you!
 
 ### Topics
 

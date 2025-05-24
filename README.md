@@ -2,13 +2,24 @@
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/bhrigu123/TimeCraft/main/TimeCraft/Assets.xcassets/AppIcon.appiconset/Icon-1024.png" width="128" height="128"/>
+</p>
+
+<p align="center"> 
+<img src="https://img.shields.io/github/downloads/bhrigu123/TimeCraft/total"/> <img src="https://img.shields.io/github/v/release/bhrigu123/TimeCraft?display_name=tag"/>
+
+</p>
+
+
+<p align="center">
 
 [Features](#features) • [Installation](#installation) • [Contributing](#contributing) • [License](#license)
 
 </p>
 
+
 ## Overview
 
+<p align="center>
 Are you spending enough time every day on the things that are important to you?
 
 TimeCraft is a lightweight MacOS app that lives on the menubar. You can configure different goals that you want to spend time on everyday, and track their time.
@@ -50,7 +61,7 @@ _TimeCraft requires macOS Big Sur 11 or later._
 
 ### Direct Download
 
-Direct downloads can be found on the [releases](https://github.com/yourusername/TimeCraft/releases) page.  
+Direct downloads can be found on the [releases](https://github.com/bhrigu123/TimeCraft/releases) page.  
 After downloading and extracting, just drag the _.app_ file to the _Applications_ folder.
 
 ### Building from Source

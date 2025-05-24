@@ -23,8 +23,7 @@ struct StatsView: View {
                 }
             }) {
                 HStack {
-                    Image(systemName: "plus.circle.fill")
-                    Text("+1 This Feature")
+                    Text("👍🏼 this feature on GitHub")
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
@@ -32,6 +31,13 @@ struct StatsView: View {
             .buttonStyle(PlainButtonStyle())
             .background(Color.blue.opacity(0.1))
             .cornerRadius(8)
+            .onHover { hovering in
+                if hovering {
+                    NSCursor.pointingHand.push()
+                } else {
+                    NSCursor.pop()
+                }
+            }
         }
         .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
     }

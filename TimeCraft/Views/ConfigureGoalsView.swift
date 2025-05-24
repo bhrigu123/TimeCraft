@@ -83,11 +83,13 @@ struct ConfigureGoalsView: View {
 
             // Footer
             HStack {
-                Text("v1.0.0") // TODO: Make this dynamic from App Bundle
+                Spacer()
+                Text("v1.0") // TODO: Make this dynamic from App Bundle
                     .font(.appCaption)
                     .foregroundColor(.secondaryText)
             }
-            .padding()
+            .padding(.horizontal)
+            .padding(.vertical, 8)
         }
         .background(Color.appBackground.edgesIgnoringSafeArea(.all))
     }

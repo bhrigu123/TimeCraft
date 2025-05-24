@@ -80,8 +80,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if popover.isShown {
             popover.performClose(sender)
         } else {
-            // Always show the popover relative to the icon item
+            // Disable animations for instant appearance
+            popover.animates = false
+            
+            // Pre-configure the app state
+            NSApp.activate(ignoringOtherApps: true)
+            
+            // Configure the popover before showing
+            if let popoverWindow = popover.contentViewController?.view.window {
+                popoverWindow.level = .floating
+            }
+            
+            // Show the popover
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+            
+            // Make key window after showing
+            if let popoverWindow = popover.contentViewController?.view.window {
+                popoverWindow.makeKey()
+            }
         }
     }
 

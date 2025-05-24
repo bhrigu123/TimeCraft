@@ -14,11 +14,11 @@
     <a href="#installation">Installation</a> •
     <a href="#contributing">Contributing</a> •
     <a href="#license">License</a>
-  </p>
+</p>
 
 ## Overview
 
-<p align="center>
+<p align="center">
 
 Are you spending enough time every day on the things that are important to you?
 

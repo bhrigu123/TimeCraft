@@ -1,9 +1,21 @@
 # TimeCraft
 
-Simple macOS menu bar app to track time spent on your goals and boost productivity.
+<p align="center">
+<img src="https://raw.githubusercontent.com/bhrigu123/TimeCraft/main/TimeCraft/Assets.xcassets/AppIcon.appiconset/Icon-1024.png" width="128" height="128"/>
 
 [Features](#features) • [Installation](#installation) • [Contributing](#contributing) • [License](#license)
 
+</p>
+
+## Overview
+
+Are you spending enough time every day on the things that are important to you?
+
+TimeCraft is a lightweight MacOS app that lives on the menubar. You can configure different goals that you want to spend time on everyday, and track their time.
+
+You start/stop the timers from the menubar before starting your activity. And at the end of the day, review if you met your goals. For me this serves as a constant reminder to take out some time for certain things that are important but are easy to overlook.
+
+</p>
 
 <div align="center">
     <img
@@ -24,10 +36,9 @@ Simple macOS menu bar app to track time spent on your goals and boost productivi
 
 - All interactions through the macOS menu bar
 - Create and configure goals with target durations
-- Track time spent on each goal with a single click
+- Start/Stop timers on each goal with a single click
 - View active goal and elapsed time directly in the menu bar
 - Beautiful and intuitive interface for goal management
-- View statistics and progress for each goal
 - Seamless background operation while you focus on your work
 - Supports both light and dark mode
 

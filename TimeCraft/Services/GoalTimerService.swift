@@ -15,28 +15,13 @@ class GoalTimerService: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var lastSaveTime: Date = Date()
     private let saveInterval: TimeInterval = 60.0 // Save every 60 seconds
+    private var workspace = NSWorkspace.shared
+    private var distributedCenter = DistributedNotificationCenter.default()
 
     init() {
-        // Load initial goals
         loadGoals()
-        
-        // Observe changes to goalsData
-        NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
-            .sink { [weak self] _ in
-                self?.loadGoals()
-            }
-            .store(in: &cancellables)
-            
-        // Check for new day and reset if needed when app starts
         checkAndResetForNewDay()
-        
-        // Add observer for app termination
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(saveCurrentStateBeforeQuit),
-            name: NSApplication.willTerminateNotification,
-            object: nil
-        )
+        setupNotificationObservers()
     }
     
     private func loadGoals() {
@@ -173,10 +158,61 @@ class GoalTimerService: ObservableObject {
         logger.info("Created new goal: \(name)")
     }
     
-    @objc func saveCurrentStateBeforeQuit() {
-        logger.info("App terminating, saving current state")
+    @objc func saveCurrentStateAndStopTimer() {
+        logger.info("Saving current state and stopping timer")
         if activeGoalID != nil {
             stopTimer()
+        }
+    }
+
+    private func setupNotificationObservers() {
+        // App-internal notifications
+        let notificationCenter = NotificationCenter.default
+        
+        // UserDefaults changes
+        notificationCenter.publisher(for: UserDefaults.didChangeNotification)
+            .sink { [weak self] _ in
+                self?.loadGoals()
+            }
+            .store(in: &cancellables)
+        
+        // App termination
+        notificationCenter.addObserver(
+            self,
+            selector: #selector(saveCurrentStateAndStopTimer),
+            name: NSApplication.willTerminateNotification,
+            object: nil
+        )
+        
+        // Workspace notifications (current user session)
+        let workspaceNotifications: [NSNotification.Name] = [
+            NSWorkspace.willSleepNotification,          // System sleep
+            NSWorkspace.screensDidSleepNotification,    // Display sleep
+            NSWorkspace.sessionDidResignActiveNotification  // User session change
+        ]
+        
+        workspaceNotifications.forEach { notification in
+            workspace.notificationCenter.addObserver(
+                self,
+                selector: #selector(saveCurrentStateAndStopTimer),
+                name: notification,
+                object: nil
+            )
+        }
+        
+        // System-wide notifications
+        let systemNotifications: [NSNotification.Name] = [
+            NSNotification.Name("com.apple.screensaver.didstart"),  // Screen saver
+            NSNotification.Name("com.apple.screenIsLocked")         // Screen lock
+        ]
+        
+        systemNotifications.forEach { notification in
+            distributedCenter.addObserver(
+                self,
+                selector: #selector(saveCurrentStateAndStopTimer),
+                name: notification,
+                object: nil
+            )
         }
     }
 } 

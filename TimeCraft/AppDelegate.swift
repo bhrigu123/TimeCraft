@@ -125,6 +125,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         // Save any active timer state before the app quits.
-        timerService?.saveCurrentStateBeforeQuit()
+        timerService?.saveCurrentStateAndStopTimer()
     }
 } 

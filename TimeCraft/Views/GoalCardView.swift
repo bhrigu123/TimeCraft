@@ -38,7 +38,7 @@ struct GoalCardView: View {
                     }) {
                         Image(systemName: isThisGoalActive ? "pause.fill" : "play.fill")
                             .font(.system(size: 22))
-                            .foregroundColor(.appAccent)
+                            .foregroundColor(isThisGoalActive ? .orange : .appAccent)
                     }
                     .buttonStyle(.plain)
                     .padding(.top, 2)

@@ -11,6 +11,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var popover: NSPopover?
     var timerService: GoalTimerService?
     private var cancellables = Set<AnyCancellable>()
+    private var statusMenu: NSMenu?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let timerService = GoalTimerService()
@@ -20,8 +21,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         iconItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = iconItem?.button {
             button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Timer")
-            button.action = #selector(togglePopover(_:))
+            button.target = self
+            button.action = #selector(handleStatusItemClick(_:))
+            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
+        
+        // Create the menu but don't assign it yet
+        statusMenu = NSMenu()
+        statusMenu?.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         
         // Text item for active goal (initially hidden)
         textItem = NSStatusBar.system.statusItem(withLength: 0)
@@ -38,6 +45,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Subscribe to timer service changes to update the menu bar text
         setupTimerObservers(timerService)
+    }
+
+    @objc private func handleStatusItemClick(_ sender: NSStatusBarButton) {
+        if let event = NSApp.currentEvent {
+            switch event.type {
+            case .rightMouseUp:
+                iconItem?.menu = statusMenu // Assign menu only for right click
+                statusMenu?.popUp(positioning: nil, at: NSPoint(x: 0, y: 0), in: sender)
+                iconItem?.menu = nil // Remove menu after it's shown
+            case .leftMouseUp:
+                togglePopover(sender)
+            default:
+                break
+            }
+        }
     }
 
     private func setupTimerObservers(_ timerService: GoalTimerService) {

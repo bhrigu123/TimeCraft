@@ -24,57 +24,68 @@ struct ConfigureGoalsView: View {
             .padding()
 
             // List of goals
-            ScrollViewReader { proxy in
-                List {
-                    ForEach(timerService.goals, id: \.id) { goal in
-                        EditableGoalRowView(
-                            goal: Binding(
-                                get: { goal },
-                                set: { newValue in
-                                    var mutableGoals = timerService.goals
-                                    if let foundIndex = mutableGoals.firstIndex(where: { $0.id == newValue.id }) {
-                                        mutableGoals[foundIndex] = newValue
-                                        timerService.saveGoals(mutableGoals)
-                                    }
-                                }
-                            ),
-                            onSave: { goalToSave in
-                                var mutableGoals = timerService.goals
-                                if let foundIndex = mutableGoals.firstIndex(where: { $0.id == goalToSave.id }) {
-                                    mutableGoals[foundIndex] = goalToSave
-                                    timerService.saveGoals(mutableGoals)
-                                } else {
-                                    print("Error: Goal to save not found in the list for onSave callback.")
-                                }
-                            },
-                            onDelete: {
-                                var currentGoals = timerService.goals
-                                if let foundIndex = currentGoals.firstIndex(where: { $0.id == goal.id }) {
-                                    if timerService.activeGoalID == goal.id {
-                                        timerService.stopTimer()
-                                    }
-                                    currentGoals.remove(at: foundIndex)
-                                    timerService.saveGoals(currentGoals)
-                                } else {
-                                    print("Error: Goal not found for deletion.")
-                                }
-                            }
-                        )
-                        .id(goal.id) // Add id for scrolling
-                        .listRowInsets(EdgeInsets())
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                    }
+            if timerService.goals.isEmpty {
+                VStack {
+                    Text("Add a goal to get started")
+                        .font(.title2)
+                        .fontWeight(.light)
+                        .foregroundColor(.gray)
                 }
-                .listStyle(PlainListStyle())
-                .onChange(of: timerService.goals.count) { newCount in
-                    if shouldScrollToTop {
-                        withAnimation {
-                            if let firstGoal = timerService.goals.first {
-                                proxy.scrollTo(firstGoal.id, anchor: .top)
-                            }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.appBackground) 
+            } else {
+                ScrollViewReader { proxy in
+                    List {
+                        ForEach(timerService.goals, id: \.id) { goal in
+                            EditableGoalRowView(
+                                goal: Binding(
+                                    get: { goal },
+                                    set: { newValue in
+                                        var mutableGoals = timerService.goals
+                                        if let foundIndex = mutableGoals.firstIndex(where: { $0.id == newValue.id }) {
+                                            mutableGoals[foundIndex] = newValue
+                                            timerService.saveGoals(mutableGoals)
+                                        }
+                                    }
+                                ),
+                                onSave: { goalToSave in
+                                    var mutableGoals = timerService.goals
+                                    if let foundIndex = mutableGoals.firstIndex(where: { $0.id == goalToSave.id }) {
+                                        mutableGoals[foundIndex] = goalToSave
+                                        timerService.saveGoals(mutableGoals)
+                                    } else {
+                                        print("Error: Goal to save not found in the list for onSave callback.")
+                                    }
+                                },
+                                onDelete: {
+                                    var currentGoals = timerService.goals
+                                    if let foundIndex = currentGoals.firstIndex(where: { $0.id == goal.id }) {
+                                        if timerService.activeGoalID == goal.id {
+                                            timerService.stopTimer()
+                                        }
+                                        currentGoals.remove(at: foundIndex)
+                                        timerService.saveGoals(currentGoals)
+                                    } else {
+                                        print("Error: Goal not found for deletion.")
+                                    }
+                                }
+                            )
+                            .id(goal.id) // Add id for scrolling
+                            .listRowInsets(EdgeInsets())
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
                         }
-                        shouldScrollToTop = false
+                    }
+                    .listStyle(PlainListStyle())
+                    .onChange(of: timerService.goals.count) { newCount in
+                        if shouldScrollToTop {
+                            withAnimation {
+                                if let firstGoal = timerService.goals.first {
+                                    proxy.scrollTo(firstGoal.id, anchor: .top)
+                                }
+                            }
+                            shouldScrollToTop = false
+                        }
                     }
                 }
             }
@@ -84,7 +95,7 @@ struct ConfigureGoalsView: View {
             // Footer
             HStack {
                 Spacer()
-                Text("v1.0") // TODO: Make this dynamic from App Bundle
+                Text("v1.0.1") // TODO: Make this dynamic from App Bundle
                     .font(.appCaption)
                     .foregroundColor(.secondaryText)
             }

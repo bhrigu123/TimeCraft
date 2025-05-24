@@ -57,8 +57,6 @@ You start/stop the timers from the menubar before starting your activity. And at
 
 ## Installation
 
-_TimeCraft requires macOS Big Sur 11 or later._
-
 ### Direct Download
 
 Direct downloads can be found on the [releases](https://github.com/bhrigu123/TimeCraft/releases) page.  

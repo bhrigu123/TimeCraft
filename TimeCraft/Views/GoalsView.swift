@@ -2,16 +2,38 @@ import SwiftUI
 
 struct GoalsView: View {
     @ObservedObject var timerService: GoalTimerService 
+    @Binding var navigationState: NavigationState
 
     var body: some View {
         if timerService.goals.isEmpty {
             VStack {
-                Text("No Goals")
-                    .font(.appHeadline) 
-                    .foregroundColor(.primaryText)
-                Text("Go to Settings to add new goals.")
-                    .font(.appSubheadline) 
-                    .foregroundColor(.secondaryText)
+                Text("No Goals Added")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+
+                Button(action: {
+                    navigationState = .configuration
+                }) {
+                    HStack {
+                        Image(systemName: "wrench")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.gray)
+                        Text("Configure Goals")
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                }
+                .buttonStyle(PlainButtonStyle())
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(8)
+                .onHover { hovering in
+                    if hovering {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.appBackground) 
@@ -41,7 +63,7 @@ struct GoalsView_Previews: PreviewProvider {
         ]
         mockTimerService.saveGoals(sampleGoals)
 
-        return GoalsView(timerService: mockTimerService)
+        return GoalsView(timerService: mockTimerService, navigationState: .constant(.goals))
             .frame(width: 320, height: 450)
             .background(Color.appBackground) 
     }

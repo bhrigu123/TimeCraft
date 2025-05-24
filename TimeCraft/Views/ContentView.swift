@@ -62,7 +62,7 @@ struct ContentView: View {
             // Content based on navigation state
             switch navigationState {
             case .goals:
-                GoalsView(timerService: timerService)
+                GoalsView(timerService: timerService, navigationState: $navigationState)
                     .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
             case .configuration:
                 ConfigureGoalsView(timerService: timerService)

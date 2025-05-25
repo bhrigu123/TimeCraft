@@ -24,9 +24,9 @@ Are you spending enough time every day on the things that matter?
 
 TimeCraft is a lightweight MacOS app that lives on the menubar, and helps you track if you're giving enough time each day to the things that truly matter.
 You can configure different goals that you want to spend time on everyday, and track their time.
-Not just the urgent stuff, but the important things that are easy to skip.
 
-I built this because I found myself constantly skipping things like deep work, or learning. Things that don't scream for attention, but shape who we become.
+I built this because I found myself constantly skipping things like deep work, or learning. 
+Things that don't scream for attention, but shape who we become.
 
 > *Inspired by Cal Newport's hour tally system.*
 

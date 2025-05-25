@@ -65,8 +65,8 @@ I built this because I found myself constantly skipping things like deep work, o
 
 ### Direct Download
 
-Direct downloads can be found on the [releases](https://github.com/bhrigu123/TimeCraft/releases) page.  
-After downloading and extracting, just drag the _.app_ file to the _Applications_ folder.
+1. Downlod the TimeCraft `zip` file of the latest version from the [releases](https://github.com/bhrigu123/TimeCraft/releases) page.  
+2. After downloading and extracting, just drag the `TimeCraft` app file to the _Applications_ folder.
 
 ### Building from Source
 

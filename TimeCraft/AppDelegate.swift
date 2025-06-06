@@ -30,13 +30,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusMenu = NSMenu()
         statusMenu?.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         
-        // Text item for active goal (initially hidden)
-        textItem = NSStatusBar.system.statusItem(withLength: 0)
-        if let textButton = textItem?.button {
-            // When text is clicked, show popover from the icon on the menu bar
-            textButton.action = #selector(togglePopover(_:))
-        }
-
+        // A text item will also be created dynamically when a goal is active
+        
         // Popover window that appears when the menu bar icon is clicked
         popover = NSPopover()
         popover?.contentSize = NSSize(width: 320, height: 450) 
@@ -72,9 +67,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func updateMenuBarText(goalID: UUID?, elapsedTime: TimeInterval) {
-        guard let textButton = textItem?.button else { return }
-        
         if let goalID = goalID, let goal = timerService?.goal(with: goalID) {
+            // Create text item if it doesn't exist
+            if textItem == nil {
+                textItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+                if let textButton = textItem?.button {
+                    textButton.action = #selector(togglePopover(_:))
+                }
+            }
+            
+            guard let textButton = textItem?.button else { return }
+            
             // Format elapsed time
             let hours = Int(elapsedTime) / 3600
             let minutes = Int(elapsedTime) / 60 % 60
@@ -85,13 +88,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 goal.name.prefix(12) + "..." : 
                 goal.name
             
-            // Show the text item and set its title
-            textItem?.length = NSStatusItem.variableLength
+            // Set the title
             textButton.title = "\(truncatedName) (\(timeString))"
         } else {
-            // Hide the text item when no goal is active
-            textItem?.length = 0
-            textButton.title = ""
+            // Completely remove the text item when no goal is active
+            if let textItem = textItem {
+                NSStatusBar.system.removeStatusItem(textItem)
+                self.textItem = nil
+            }
         }
     }
 

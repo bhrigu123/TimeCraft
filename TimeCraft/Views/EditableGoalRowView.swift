@@ -16,6 +16,12 @@ struct EditableGoalRowView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 16) {
+                // Drag Handle
+                Image(systemName: "line.3.horizontal")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.secondaryText)
+                    .frame(width: 16, height: 16)
+                
                 // Color Dot and Color Picker
                 Circle()
                     .fill(goal.color)

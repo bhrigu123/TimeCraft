@@ -75,6 +75,7 @@ struct ConfigureGoalsView: View {
                             .listRowSeparator(.hidden)
                             .listRowBackground(Color.clear)
                         }
+                        .onMove(perform: timerService.reorderGoals)
                     }
                     .listStyle(PlainListStyle())
                     .onChange(of: timerService.goals.count) { newCount in

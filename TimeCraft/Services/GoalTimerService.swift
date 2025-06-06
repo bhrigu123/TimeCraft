@@ -158,6 +158,13 @@ class GoalTimerService: ObservableObject {
         logger.info("Created new goal: \(name)")
     }
     
+    func reorderGoals(from source: IndexSet, to destination: Int) {
+        var updatedGoals = self.goals
+        updatedGoals.move(fromOffsets: source, toOffset: destination)
+        saveGoals(updatedGoals)
+        logger.info("Reordered goals: moved from \(source) to \(destination)")
+    }
+    
     @objc func saveCurrentStateAndStopTimer() {
         logger.info("Saving current state and stopping timer")
         if activeGoalID != nil {

@@ -5,7 +5,7 @@ import SwiftUI
 class VersionService: ObservableObject {
     @Published var currentVersion: String = "Unknown"
     @Published var latestVersion: String?
-    @Published var hasUpdate: Bool = true
+    @Published var hasUpdate: Bool = false
     @Published var isCheckingForUpdate: Bool = false
     @Published var lastUpdateCheck: Date?
     @Published var hasError: Bool = false
@@ -136,9 +136,6 @@ class VersionService: ObservableObject {
     }
     
     private func isVersionNewer(_ version1: String, than version2: String) -> Bool {
-        // test
-        return true
-        /*
         let v1Components = version1.split(separator: ".").compactMap { Int($0) }
         let v2Components = version2.split(separator: ".").compactMap { Int($0) }
         
@@ -156,7 +153,6 @@ class VersionService: ObservableObject {
         }
         
         return false // Versions are equal
-        */
     }
     
     func openReleasesPage() {

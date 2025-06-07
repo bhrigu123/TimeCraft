@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ConfigureGoalsView: View {
     @ObservedObject var timerService: GoalTimerService
+    @StateObject private var versionService = VersionService()
     @State private var shouldScrollToTop = false
     
     var body: some View {
@@ -94,14 +95,7 @@ struct ConfigureGoalsView: View {
             Spacer()
 
             // Footer
-            HStack {
-                Spacer()
-                Text("v1.0.1") // TODO: Make this dynamic from App Bundle
-                    .font(.appCaption)
-                    .foregroundColor(.secondaryText)
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
+            footerView
         }
         .background(Color.appBackground.edgesIgnoringSafeArea(.all))
     }
@@ -109,6 +103,36 @@ struct ConfigureGoalsView: View {
     private func addNewGoal() {
         shouldScrollToTop = true
         timerService.createNewGoal()
+    }
+    
+    @ViewBuilder
+    private var footerView: some View {
+        HStack {
+            Spacer()
+            HStack(spacing: 5) {
+                Text("v\(versionService.currentVersion)")
+                    .font(.appCaption)
+                    .foregroundColor(.secondaryText)
+
+                if versionService.hasUpdate {
+                    Text("(Update available)")
+                        .font(.appCaption)
+                        .foregroundColor(.accentColor)
+                        .onTapGesture {
+                            versionService.openReleasesPage()
+                        }
+                        .onHover { hovering in
+                            if hovering {
+                                NSCursor.pointingHand.push()
+                            } else {
+                                NSCursor.pop()
+                            }
+                        }
+                }
+            }
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 8)
     }
 }
 
